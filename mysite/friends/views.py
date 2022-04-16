@@ -8,16 +8,21 @@ from django.urls import reverse_lazy
 from .models import *
 from . import forms
 # Create your views here.
-left_menu = [{'title':'Друзья', 'url_name':'my_friends'},
-{'title':'Сообщения', 'url_name':'messages'},
-{'title':'Регистрация', 'url_name':'register'}
+left_menu = [{'title':'Followers', 'url_name':'my_friends'},
+{'title':'Posts', 'url_name':'messages'},
+{'title':'Registration', 'url_name':'register'}
 ]
+
+def home(request):
+    return render(request, 'friends/base.html')
 
 def profile(request, id):
     user = User.objects.get(id = id)
+    posts = Post.objects.filter(user_id = id)
     context = {
         'user':user,
         'menu':left_menu,
+        'posts':posts,
     }
     return render(request, 'friends/user.html', context=context)
 
@@ -38,7 +43,8 @@ def register_user(request):
     if request.method == "POST":
         form = forms.RegisterUserForm(request.POST)
         if form.is_valid():
-            return redirect('profile',id=1)
+            user = form.save()
+            return redirect('profile',id=user.pk)
     else:
         form = forms.RegisterUserForm()
     return render(request, 'friends/register.html', {'form':form})

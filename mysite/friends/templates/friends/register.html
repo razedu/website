@@ -4,7 +4,28 @@
 
 <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Регистрация</button>
+    <div class="d-flex flex-column register-form">
+        {% for field in form %}
+            <div class="p-1">
+                {{ field.errors }}
+            </div>
+            <div class="d-flex flex-row">
+                <div class="p-1 form-label-tag">
+                    {{ field.label_tag }}
+                </div>
+                <div class="p-1">
+                    {{ field }}
+                </div>
+            </div>
+            <div class="p-1">
+                {% if field.help_text %}
+                <p class="help">{{ field.help_text|safe }}</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <div class="d-flex">
+            <button type="submit" class="btn btn-primary">Регистрация</button>
+        </div>
+    </div>
 </form>
 {% endblock %}
