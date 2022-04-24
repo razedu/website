@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.views import LoginView
+from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 
@@ -27,7 +28,28 @@ def profile(request, id):
     return render(request, 'friends/user.html', context=context)
 
 def user_login(request):
-    pass
+    if request.method == "POST":
+        form = forms.LoginUserForm(request.POST)
+        if form.is_valid():
+            username=form.cleaned_data.get('username')
+            password=form.cleaned_data.get('password')
+            user = User.objects.get(username = username)
+            if user:
+                if user.password == password:
+                    user_data = authenticate(
+                        request,
+                        username=username,
+                        password=password)
+                    login(request, user_data)
+                    return redirect('profile', id=user.pk)
+    else:
+        form = forms.LoginUserForm()
+    return render(request, 'friends/login.html', {'form':form})
+
+def user_logout(request):
+    if request.method == "POST":
+        logout(request)
+        return redirect('login')
 
 # class RegisterUser(CreateView):
 #     form_class = forms.RegisterUserForm
@@ -44,6 +66,7 @@ def register_user(request):
         form = forms.RegisterUserForm(request.POST)
         if form.is_valid():
             user = form.save()
+            login(request, user)
             return redirect('profile',id=user.pk)
     else:
         form = forms.RegisterUserForm()

@@ -1,6 +1,6 @@
-{% extends 'friends/base_logout.html'%}
+{% extends 'friends/base_logout.html' %}
 
-{% block content%}
+{% block content %}
 <div class="col">
     <form method="post">
         {% csrf_token %}
@@ -25,9 +25,8 @@
             {% endfor %}
         </div>
         <div class="col">
-            <button type="submit" class="btn btn-primary">Регистрация</button>
+            <button type="submit" class="btn btn-primary">Войти</button>
         </div>
     </form>
 </div>
-
 {% endblock %}

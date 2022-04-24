@@ -1,11 +1,12 @@
 {% extends 'friends/base.html' %}
-{% load static %}
 
 {% block content %}
-<div class="d-flex flex-column">
-    <p>{{user.first_name}} {{user.second_name}}</p>
+<div class="row">
+    <div class="col-3 p-2">
+        <p>{{user.username}}</p>
+    </div>
     {% for post in posts %}
-    <div>
+    <div class="col p-2">
         <p>{{post.title}}</p>
         <p>{{post.time_create}}</p>
     </div>
