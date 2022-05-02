@@ -5,6 +5,9 @@
     <form method="post">
         {% csrf_token %}
         <div class="col register-form">
+            {% if form.non_field_errors %}
+                {{ form.non_field_errors.as_ul}}
+            {% endif %}
             {% for field in form %}
                 <div class="col">
                     {{ field.errors }}

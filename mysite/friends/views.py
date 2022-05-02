@@ -1,10 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import CreateView
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
+from django.contrib.auth.hashers import make_password
 
 from .models import *
 from . import forms
@@ -19,11 +20,15 @@ def home(request):
 
 def profile(request, id):
     user = User.objects.get(id = id)
-    posts = Post.objects.filter(user_id = id)
+    posts = user.posts.all()
+    followers = user.followers.count()
+    is_follow = False if user.followers.filter(following_user = request.user) else True
     context = {
         'user':user,
         'menu':left_menu,
         'posts':posts,
+        'followers':followers,
+        'is_follow':is_follow,
     }
     return render(request, 'friends/user.html', context=context)
 
@@ -33,33 +38,22 @@ def user_login(request):
         if form.is_valid():
             username=form.cleaned_data.get('username')
             password=form.cleaned_data.get('password')
-            user = User.objects.get(username = username)
+            user = User.objects.get(username=username)
             if user:
-                if user.password == password:
-                    user_data = authenticate(
-                        request,
-                        username=username,
-                        password=password)
-                    login(request, user_data)
-                    return redirect('profile', id=user.pk)
+                user_data = authenticate(
+                    request,
+                    username=username,
+                    password=password)
+                login(request, user_data)
+                return redirect('profile', id=user.pk)
     else:
         form = forms.LoginUserForm()
     return render(request, 'friends/login.html', {'form':form})
 
 def user_logout(request):
-    if request.method == "POST":
-        logout(request)
-        return redirect('login')
+    logout(request)
+    return redirect('home')
 
-# class RegisterUser(CreateView):
-#     form_class = forms.RegisterUserForm
-#     template_name = 'friends/register.html'
-#     success_url = reverse_lazy('profile')
-    
-#     def form_valid(self, form):
-#         user = form.save()
-#         login(self.request, user)
-#         return redirect('profile')
 
 def register_user(request):
     if request.method == "POST":
@@ -71,6 +65,12 @@ def register_user(request):
     else:
         form = forms.RegisterUserForm()
     return render(request, 'friends/register.html', {'form':form})
+
+def follow_user(request, user_name):
+    user = User.objects.get(username = user_name)
+    print(request.user.pk)
+    user.followers.add(request.user)
+    return redirect('profile', id=user.pk)
 
 
 def my_friends(request):
