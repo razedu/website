@@ -1,0 +1,13 @@
+{% extends 'friends/base.html' %}
+
+{% block content %}
+<div class="d-flex flex-wrap">
+    {% for follower in followers %}
+        <div class="p-3">
+            <a href="{% url 'profile' id=follower.following_user.pk %}" class="text-decoration-none text-reset">
+                {{follower.following_user.username}}</a>
+        </div>
+    {% endfor %}
+</div>
+
+{% endblock%}

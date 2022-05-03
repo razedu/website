@@ -10,13 +10,19 @@ from django.contrib.auth.hashers import make_password
 from .models import *
 from . import forms
 # Create your views here.
-left_menu = [{'title':'Followers', 'url_name':'my_friends'},
+left_menu = [{'title':'Followers', 'url_name':'followers'},
 {'title':'Posts', 'url_name':'messages'},
 {'title':'Registration', 'url_name':'register'}
 ]
 
 def home(request):
-    return render(request, 'friends/base.html')
+    user = User.objects.get(username=request.user.username)
+    user_posts = user.following.user.posts.all()
+    context = {
+        'menu':left_menu,
+        'user_posts':user_posts,
+    }
+    return render(request, 'friends/base.html', context=context)
 
 def profile(request, id):
     user = User.objects.get(id = id)
@@ -69,9 +75,18 @@ def register_user(request):
 def follow_user(request, user_name):
     user = User.objects.get(username = user_name)
     print(request.user.pk)
-    user.followers.add(request.user)
+    follow = Follow(user=user, following_user=request.user)
+    follow.save()
     return redirect('profile', id=user.pk)
 
+def my_followers(request):
+    user = User.objects.get(username=request.user.username)
+    followers = user.followers.all()
+    context = {
+        'followers':followers,
+        'menu':left_menu,
+    }
+    return render(request, 'friends/followers.html', context=context)
 
 def my_friends(request):
     pass

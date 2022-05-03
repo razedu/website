@@ -51,6 +51,9 @@
                     </div>
                     <div class="col">
                         {% block content %}
+                        {% for post in user_posts%}
+                            <p>{{post.title}}</p>
+                        {% endfor %}
                         {% endblock %}
                     </div>
                 </div>
