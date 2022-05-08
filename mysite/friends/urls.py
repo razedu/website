@@ -6,9 +6,12 @@ urlpatterns = [
     path('<int:id>/', views.profile, name='profile'),
     path('my_friends/', views.my_friends, name='my_friends'),
     path('messages/', views.messages, name='messages'),
+    path('all_users/', views.all_users, name='all_users'),
     path('register/', views.register_user, name='register'),
     path('login/', views.user_login, name='login'),
     path('logout/', views.user_logout, name='logout'),
-    path('follow/<str:user_name>', views.follow_user, name='follow'),
-    path('followers/', views.my_followers, name='followers')
+    path('follow/<int:user_id>', views.follow_user, name='follow'),
+    path('unfollow/<int:user_id>', views.unfollow_user, name='unfollow'),
+    path('followers/', views.my_followers, name='followers'),
+    path('post/delete_post/<int:post_id>', views.delete_post, name='delete_post'),
 ]

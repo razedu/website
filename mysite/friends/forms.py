@@ -28,3 +28,6 @@ class LoginUserForm(forms.Form):
             return self.cleaned_data
         else:
             raise forms.ValidationError('Incorrect password')
+
+class PostForm(forms.Form):
+    text = forms.CharField(label='Text', max_length=500, widget=forms.Textarea(attrs={'class':'form-control', 'style':'height:100px'}))

@@ -6,29 +6,49 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.contrib.auth.hashers import make_password
+from django.db.models import Q
 
 from .models import *
 from . import forms
 # Create your views here.
 left_menu = [{'title':'Followers', 'url_name':'followers'},
 {'title':'Posts', 'url_name':'messages'},
-{'title':'Registration', 'url_name':'register'}
+{'title':'Registration', 'url_name':'register'},
+{'title':'All users', 'url_name':'all_users'},
 ]
 
 def home(request):
-    user = User.objects.get(username=request.user.username)
-    user_posts = user.following.user.posts.all()
+    my_user=request.user
+    if request.method == "POST":
+        form = forms.PostForm(request.POST)
+        if form.is_valid():
+            Post.objects.create(title=form.cleaned_data.get('text'), user=my_user)
+            return HttpResponseRedirect('/')
+    else:
+        form = forms.PostForm()
+    # user_posts = Post.objects.filter(Q(user__followers__following_user=my_user.pk)|Q(user_id=my_user.pk)).order_by('-time_create')
+    users = Follow.objects.filter(following_user=my_user.pk).values('user')
+    user_posts = Post.objects.filter(Q(user__in=users)|Q(user_id=my_user.pk)).order_by('-time_create')
     context = {
         'menu':left_menu,
         'user_posts':user_posts,
+        'form':form,
     }
     return render(request, 'friends/base.html', context=context)
 
+def all_users(request):
+    users = User.objects.all().exclude(pk=request.user.pk)
+    context = {
+        'menu':left_menu,
+        'users':users
+    }
+    return render(request,'friends/all_users.html', context=context)
+
 def profile(request, id):
     user = User.objects.get(id = id)
-    posts = user.posts.all()
+    posts = user.posts.all().order_by('-time_create')
     followers = user.followers.count()
-    is_follow = False if user.followers.filter(following_user = request.user) else True
+    is_follow = False if not user.followers.filter(following_user = request.user) else True
     context = {
         'user':user,
         'menu':left_menu,
@@ -72,21 +92,29 @@ def register_user(request):
         form = forms.RegisterUserForm()
     return render(request, 'friends/register.html', {'form':form})
 
-def follow_user(request, user_name):
-    user = User.objects.get(username = user_name)
-    print(request.user.pk)
+def follow_user(request, user_id):
+    user = User.objects.get(pk = user_id)
     follow = Follow(user=user, following_user=request.user)
     follow.save()
-    return redirect('profile', id=user.pk)
+    return redirect('profile', id=user_id)
+
+def unfollow_user(request, user_id):
+    follow = Follow.objects.get(user=user_id, following_user=request.user.pk)
+    follow.delete()
+    return redirect('profile', id=user_id)
 
 def my_followers(request):
-    user = User.objects.get(username=request.user.username)
-    followers = user.followers.all()
+    followers = User.objects.filter(following__user=request.user.pk)
     context = {
         'followers':followers,
         'menu':left_menu,
     }
     return render(request, 'friends/followers.html', context=context)
+
+def delete_post(request, post_id):
+    post = Post.objects.get(id=post_id)
+    post.delete()
+    return redirect('profile', id=request.user.pk)
 
 def my_friends(request):
     pass
