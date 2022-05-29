@@ -6,3 +6,4 @@ from . import models
 
 admin.site.register(models.Post)
 admin.site.register(models.Follow)
+admin.site.register(models.Profile)

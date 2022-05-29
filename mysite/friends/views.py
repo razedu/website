@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import CreateView
 from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
@@ -12,11 +13,12 @@ from .models import *
 from . import forms
 # Create your views here.
 left_menu = [{'title':'Followers', 'url_name':'followers'},
+{'title':'Followed', 'url_name':'followed'},
 {'title':'Posts', 'url_name':'messages'},
-{'title':'Registration', 'url_name':'register'},
 {'title':'All users', 'url_name':'all_users'},
 ]
 
+@login_required(login_url='login/')
 def home(request):
     my_user=request.user
     if request.method == "POST":
@@ -29,18 +31,23 @@ def home(request):
     # user_posts = Post.objects.filter(Q(user__followers__following_user=my_user.pk)|Q(user_id=my_user.pk)).order_by('-time_create')
     users = Follow.objects.filter(following_user=my_user.pk).values('user')
     user_posts = Post.objects.filter(Q(user__in=users)|Q(user_id=my_user.pk)).order_by('-time_create')
+    user_likes = Post.objects.filter(likes__user=request.user)
+    print(user_likes)
     context = {
         'menu':left_menu,
         'user_posts':user_posts,
         'form':form,
+        'user_likes':user_likes,
     }
     return render(request, 'friends/base.html', context=context)
 
 def all_users(request):
     users = User.objects.all().exclude(pk=request.user.pk)
+    user_followed = User.objects.filter(followers__following_user=request.user)
     context = {
         'menu':left_menu,
-        'users':users
+        'users':users,
+        'user_followed':user_followed,
     }
     return render(request,'friends/all_users.html', context=context)
 
@@ -86,6 +93,7 @@ def register_user(request):
         form = forms.RegisterUserForm(request.POST)
         if form.is_valid():
             user = form.save()
+            Profile.objects.create(user=user)
             login(request, user)
             return redirect('profile',id=user.pk)
     else:
@@ -111,10 +119,29 @@ def my_followers(request):
     }
     return render(request, 'friends/followers.html', context=context)
 
+def followed_user(request):
+    followed = User.objects.filter(followers__following_user=request.user.pk)
+    context = {
+        'followed':followed,
+        'menu':left_menu,
+    }
+    return render(request, 'friends/followed.html', context=context)
+
 def delete_post(request, post_id):
     post = Post.objects.get(id=post_id)
     post.delete()
     return redirect('profile', id=request.user.pk)
+
+def like_post(request, post_id):
+    post = Post.objects.get(id=post_id)
+    like = Like(user=request.user, post=post)
+    like.save()
+    return redirect('home')
+
+def like_delete(request, post_id):
+    like = Like.objects.get(post=post_id, user=request.user.pk)
+    like.delete()
+    return redirect('home')
 
 def my_friends(request):
     pass

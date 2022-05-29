@@ -3,6 +3,7 @@
 {% block content %}
 <div class="row">
     <div class="col-3 p-2">
+        <img class="avatar" src="{{user.profile.avatar.url}}" alt="">
         <p>{{user.username}}</p>
         <p>Followers: {{followers}}</p>
         {% if user.pk != request.user.pk %}
@@ -17,11 +18,14 @@
         {% for post in posts %}
             <div class="col p-1 m-1 border border-secondary rounded">
                 <p class="lh-1">{{post.title}}</p>
-                <p class="lh-1">{{post.time_create}}
+                <div class="d-flex flex-row">
+                    <p >{{post.time_create}} ||</p>
+                    <p style="margin:0 6px 0 6px">{{post.likes.count}}</p>
                     {% if user.pk == request.user.pk %}
-                    <a href="{% url 'delete_post' post_id=post.pk %}">X</a>
+                    <a href="{% url 'delete_post' post_id=post.pk %}"><i class="fa-solid fa-x"></i></a>
                     {% endif %}
-                </p>
+                </div>
+                
             </div>
         {% endfor %}
     </div>

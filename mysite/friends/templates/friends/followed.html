@@ -1,0 +1,15 @@
+{% extends 'friends/base.html' %}
+
+{% block content%}
+<div class="d-flex flex-wrap">
+    {% for user in followed %}
+        <div class="p-2 m-1 border border-secondary rounded">
+            <a href="{% url 'profile' id=user.pk %}" class="text-decoration-none text-reset">
+                <img class="avatar" src="{{user.profile.avatar.url}}" alt="">
+                <p class="text-center lh-1">{{user.username}}</p>
+                <a class="btn btn-primary btn-sm" href="{% url 'unfollow' user_id=user.id%}">Unfollow</a>
+            </a>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

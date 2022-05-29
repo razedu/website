@@ -3,11 +3,17 @@
 {% block content %}
 <div class="d-flex flex-wrap">
     {% for user in users %}
-        <div class="p-2">
-            <a href="{% url 'profile' id=user.pk %}" class="text-decoration-none text-reset">
+        <div class="p-2 m-1 border border-secondary rounded d-flex flex-column align-items-center">
+            <img class="avatar" src="{{user.profile.avatar.url}}" alt="">
+            <a class="text-decoration-none user-link" href="{% url 'profile' id=user.pk%}">
                 <p class="text-center lh-1">{{user.username}}</p>
-                <p class="text-center lh-1">followers: {{user.followers.count}}</p>
             </a>
+            <p class="text-center lh-1">followers: {{user.followers.count}}</p>
+            {% if user in user_followed %}
+            <a class="btn btn-primary btn-sm" href="{% url 'unfollow' user_id=user.id%}">Unfollow</a>
+            {% else %}
+            <a class="btn btn-primary btn-sm" href="{% url 'follow' user_id=user.id%}">Follow</a>
+            {% endif %}
         </div>
     {% endfor %}
 </div>

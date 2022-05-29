@@ -12,6 +12,9 @@ urlpatterns = [
     path('logout/', views.user_logout, name='logout'),
     path('follow/<int:user_id>', views.follow_user, name='follow'),
     path('unfollow/<int:user_id>', views.unfollow_user, name='unfollow'),
+    path('like/<int:post_id>', views.like_post, name='like_post'),
+    path('unlike/<int:post_id>', views.like_delete, name='unlike_post'),
     path('followers/', views.my_followers, name='followers'),
+    path('followed/', views.followed_user, name='followed'),
     path('post/delete_post/<int:post_id>', views.delete_post, name='delete_post'),
 ]
