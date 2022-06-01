@@ -10,9 +10,15 @@
             </a>
             <p class="text-center lh-1">followers: {{user.followers.count}}</p>
             {% if user in user_followed %}
-            <a class="btn btn-primary btn-sm" href="{% url 'unfollow' user_id=user.id%}">Unfollow</a>
+            <form action="{% url 'unfollow' user_id=user.id%}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary btn-sm">Unfollow</button>
+            </form>
             {% else %}
-            <a class="btn btn-primary btn-sm" href="{% url 'follow' user_id=user.id%}">Follow</a>
+            <form action="{% url 'follow' user_id=user.id%}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary btn-sm">Follow</button>
+            </form>
             {% endif %}
         </div>
     {% endfor %}

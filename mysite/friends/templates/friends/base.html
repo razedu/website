@@ -67,22 +67,28 @@
                             </form>
                         </div>
                         {% for post in user_posts%}
-                        <div class="col p-1 m-1 border border-secondary rounded">
+                        <div class="col p-1 m-1 border border-secondary rounded position-relative">
                             <p>{{post.title}}</p>
                             <div class="d-flex flex-row">
                                 <p>{{post.user}} || {{post.time_create}} ||</p>
-                                <div class="">
-                                    {% if post in user_likes%}
-                                        <a href="{% url 'unlike_post' post_id=post.pk%}">
+                                <div class="d-flex flex-row position-absolute bottom-0 end-0">
+                                    {% if post.pk in user_likes%}
+                                    <form action="{% url 'unlike_post' post_id=post.pk%}" method="post">
+                                    {% csrf_token %}
+                                        <button type="submit" class="btn btn-link p-0">
                                             <span style="color:red"><i class="fa-solid fa-heart"></i></span>
-                                        </a>
+                                        </button>
+                                    </form>
                                     {% else %}
-                                        <a href="{% url 'like_post' post_id=post.pk%}">
+                                    <form action="{% url 'like_post' post_id=post.pk%}" method="post">
+                                    {% csrf_token %}
+                                        <button type="submit" class="btn btn-link p-0">
                                             <span style="color:black"><i class="fa-regular fa-heart"></i></span>
-                                        </a>
+                                        </button>
+                                    </form>
                                     {% endif %}
+                                    <div class="">{{post.likes.count}}</div>
                                 </div>
-                                <div>{{post.likes.count}}</div>
                             </div>
                             
                         </div>

@@ -16,13 +16,18 @@
     </div>
     <div class="col p-2">
         {% for post in posts %}
-            <div class="col p-1 m-1 border border-secondary rounded">
+            <div class="col p-1 m-1 border border-secondary rounded position-relative">
                 <p class="lh-1">{{post.title}}</p>
                 <div class="d-flex flex-row">
                     <p >{{post.time_create}} ||</p>
                     <p style="margin:0 6px 0 6px">{{post.likes.count}}</p>
                     {% if user.pk == request.user.pk %}
-                    <a href="{% url 'delete_post' post_id=post.pk %}"><i class="fa-solid fa-x"></i></a>
+                    <form action="{% url 'delete_post' post_id=post.pk %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-link position-absolute top-0 end-0 p-1">
+                            <i class="fa-solid fa-x"></i>
+                        </button>
+                    </form>
                     {% endif %}
                 </div>
                 

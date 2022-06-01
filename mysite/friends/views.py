@@ -31,8 +31,7 @@ def home(request):
     # user_posts = Post.objects.filter(Q(user__followers__following_user=my_user.pk)|Q(user_id=my_user.pk)).order_by('-time_create')
     users = Follow.objects.filter(following_user=my_user.pk).values('user')
     user_posts = Post.objects.filter(Q(user__in=users)|Q(user_id=my_user.pk)).order_by('-time_create')
-    user_likes = Post.objects.filter(likes__user=request.user)
-    print(user_likes)
+    user_likes = [post.pk for post in Post.objects.filter(likes__user=request.user)]
     context = {
         'menu':left_menu,
         'user_posts':user_posts,
@@ -101,15 +100,16 @@ def register_user(request):
     return render(request, 'friends/register.html', {'form':form})
 
 def follow_user(request, user_id):
-    user = User.objects.get(pk = user_id)
-    follow = Follow(user=user, following_user=request.user)
-    follow.save()
-    return redirect('profile', id=user_id)
+    if request.method == 'POST':
+        follow = Follow(user_id=user_id, following_user=request.user)
+        follow.save()
+        return redirect(request.META['HTTP_REFERER'])
 
 def unfollow_user(request, user_id):
-    follow = Follow.objects.get(user=user_id, following_user=request.user.pk)
-    follow.delete()
-    return redirect('profile', id=user_id)
+    if request.method == 'POST':
+        follow = Follow.objects.get(user=user_id, following_user=request.user.pk)
+        follow.delete()
+        return redirect(request.META['HTTP_REFERER'])
 
 def my_followers(request):
     followers = User.objects.filter(following__user=request.user.pk)
@@ -133,15 +133,16 @@ def delete_post(request, post_id):
     return redirect('profile', id=request.user.pk)
 
 def like_post(request, post_id):
-    post = Post.objects.get(id=post_id)
-    like = Like(user=request.user, post=post)
-    like.save()
-    return redirect('home')
+    if request.method == 'POST':
+        like = Like(user=request.user, post_id=post_id)
+        like.save()
+        return redirect(request.META['HTTP_REFERER'])
 
 def like_delete(request, post_id):
-    like = Like.objects.get(post=post_id, user=request.user.pk)
-    like.delete()
-    return redirect('home')
+    if request.method == 'POST':
+        like = Like.objects.get(post=post_id, user=request.user.pk)
+        like.delete()
+        return redirect(request.META['HTTP_REFERER'])
 
 def my_friends(request):
     pass
