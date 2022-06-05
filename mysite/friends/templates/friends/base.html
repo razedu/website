@@ -18,15 +18,18 @@
                     <div class="col p-2">
                         <h1><a href="/">Friends</a></h1>
                     </div>
-                    <div class="col p-2">
+                    <div class="col p-2 d-flex align-items-center justify-content-center">
+                        <p class="text-center fw-bold" style="margin:0px">{{weather.city}} {{weather.main.temp|floatformat}}°C</p>
+                    </div>
+                    <div class="col">
                         {% if request.user.is_authenticated %}
                             <div class="row">
-                                <div class="col p-2">
+                                <div class="col p-3 d-flex justify-content-end">
                                     <ul class="nav">
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="/{{request.user.pk}}">{{request.user.username}}</a>
+                                        <li class="nav-item p-1">
+                                            <a class="btn btn-primary btn-sm" href="/{{request.user.pk}}">{{request.user.username}}</a>
                                         </li>
-                                        <li class="nav-item">
+                                        <li class="nav-item p-1">
                                             <a class="btn btn-primary btn-sm" href="{% url 'logout' %}">Logout</a>
                                         </li>
                                     </ul>
@@ -70,7 +73,7 @@
                         <div class="col p-1 m-1 border border-secondary rounded position-relative">
                             <p>{{post.title}}</p>
                             <div class="d-flex flex-row">
-                                <p>{{post.user}} || {{post.time_create}} ||</p>
+                                <p style="margin: 0px">{{post.user}} || {{post.time_create}}</p>
                                 <div class="d-flex flex-row position-absolute bottom-0 end-0">
                                     {% if post.pk in user_likes%}
                                     <form action="{% url 'unlike_post' post_id=post.pk%}" method="post">

@@ -7,7 +7,10 @@
             <a href="{% url 'profile' id=user.pk %}" class="text-decoration-none text-reset">
                 <img class="avatar" src="{{user.profile.avatar.url}}" alt="">
                 <p class="text-center lh-1">{{user.username}}</p>
-                <a class="btn btn-primary btn-sm" href="{% url 'unfollow' user_id=user.id%}">Unfollow</a>
+                <form action="{% url 'unfollow' user_id=user.id%}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary btn-sm">Unfollow</button>
+                </form>
             </a>
         </div>
     {% endfor %}

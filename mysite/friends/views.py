@@ -9,14 +9,36 @@ from django.urls import reverse_lazy
 from django.contrib.auth.hashers import make_password
 from django.db.models import Q
 
+import requests
+import os
+
 from .models import *
 from . import forms
 # Create your views here.
-left_menu = [{'title':'Followers', 'url_name':'followers'},
+left_menu = [{'title':'News', 'url_name':'get_news'},
+{'title':'Followers', 'url_name':'followers'},
 {'title':'Followed', 'url_name':'followed'},
 {'title':'Posts', 'url_name':'messages'},
 {'title':'All users', 'url_name':'all_users'},
 ]
+
+
+# Weather API
+def get_weather(request):
+    user_ip = request.META['REMOTE_ADDR']
+    if user_ip == "127.0.0.1":
+        user_city = "Moscow"
+    else:
+        user_city = requests.get(f"http://ip-api.com/json/{user_ip}").json()['city']
+    params = {
+        "units":"metric",
+        "lang":"ru",
+    }
+    w_response = requests.get(
+        f"https://api.openweathermap.org/data/2.5/weather?q={user_city}&appid={os.getenv('WEATHER_API')}"
+        , params=params).json()
+    w_response['city'] = user_city
+    return w_response
 
 @login_required(login_url='login/')
 def home(request):
@@ -37,6 +59,7 @@ def home(request):
         'user_posts':user_posts,
         'form':form,
         'user_likes':user_likes,
+        'weather': get_weather(request)
     }
     return render(request, 'friends/base.html', context=context)
 
@@ -63,6 +86,30 @@ def profile(request, id):
         'is_follow':is_follow,
     }
     return render(request, 'friends/user.html', context=context)
+
+def get_news(request):
+    api_key = os.getenv("NEWS_API")
+    link = "https://newsapi.org/v2/top-headlines/"
+
+    headers={
+    "X-Api-Key":api_key,
+    }
+
+    params = {
+        "country":"ru",
+        "pageSize": 100,
+    }
+
+    response = requests.get(url=link, headers=headers, params=params)
+    print(response)
+    news = response.json()['articles']
+
+    context = {
+        'menu': left_menu,
+        'news': news,
+    }
+
+    return render(request, 'friends/news.html', context=context)
 
 def user_login(request):
     if request.method == "POST":

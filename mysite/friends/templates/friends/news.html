@@ -1,0 +1,12 @@
+{% extends 'friends/base.html' %}
+
+{% block content %}
+    {% for n in news %}
+        <div class="border border-3 rounded m-2 p-2">
+            <p>{{ n.title }}</p>
+            {% if n.urlToImage %}
+            <img class="rounded img-fluid" src="{{ n.urlToImage }}" alt="">
+            {% endif %}
+        </div>
+    {% endfor %}
+{% endblock %}

@@ -7,6 +7,7 @@ urlpatterns = [
     path('my_friends/', views.my_friends, name='my_friends'),
     path('messages/', views.messages, name='messages'),
     path('all_users/', views.all_users, name='all_users'),
+    path('news/', views.get_news, name='get_news'),
     path('register/', views.register_user, name='register'),
     path('login/', views.user_login, name='login'),
     path('logout/', views.user_logout, name='logout'),
