@@ -1,9 +1,61 @@
-.register-form {
-    padding-left: 10px;
+/*Header*/
+
+.site-title {
+    font-family: 'Fascinate', cursive;
+    color: white;
 }
+
+.site-title:hover {
+    color: #40DFEF;
+}
+
+/*Left menu*/
+
+.left-menu-button {
+    font-family: 'Fredoka One', cursive;
+    color:white;
+}
+
+.left-menu-button:hover {
+    color: #FAFFAF;
+}
+
 
 .avatar {
     max-width: 70px;
+}
+
+.fa-heart {
+    margin: 0 4px 0 4px;
+}
+
+.footer {
+    background-color: #072227;
+    height: 50px;
+}
+
+.form-control {
+    background-color: white;
+}
+
+.header {
+    background-color: #35858B;
+}
+
+.left-menu {
+    background-color: #4FBDBA;
+}
+
+.main-page {
+    background-color: #FFF9F9;
+}
+
+.news-box:hover {
+    background-color: #cef6f9;
+}
+
+.register-form {
+    padding-left: 10px;
 }
 
 .user-link {
@@ -14,6 +66,3 @@
     color:red;
 }
 
-.fa-heart {
-    margin: 0 4px 0 4px;
-}

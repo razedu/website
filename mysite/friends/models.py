@@ -5,15 +5,15 @@ from django.contrib.auth.models import User
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile', primary_key=True)
-    avatar = models.FileField(default='avatar.png', upload_to='avatars/', verbose_name='Аватар')
+    avatar = models.FileField(default='avatar.png', upload_to='avatars/', verbose_name='avatar')
 
     def __str__(self):
         return self.user.username
 
 class Post(models.Model):
-    title = models.CharField(max_length=300, verbose_name="Текст")
-    user = models.ForeignKey(User, related_name="posts", on_delete=models.CASCADE, verbose_name="Пользователь")
-    time_create = models.DateTimeField(auto_now_add=True, verbose_name="Время создания")
+    title = models.CharField(max_length=300, verbose_name="text")
+    user = models.ForeignKey(User, related_name="posts", on_delete=models.CASCADE, verbose_name="user")
+    time_create = models.DateTimeField(auto_now_add=True, verbose_name="time to create")
 
     def __str__(self):
         return self.user.username
@@ -23,9 +23,9 @@ class Post(models.Model):
         verbose_name_plural = "User posts"
 
 class Follow(models.Model):
-    user = models.ForeignKey(User, related_name="followers", verbose_name="Пользователь", on_delete=models.CASCADE, null=True)
-    following_user = models.ForeignKey(User, related_name="following", verbose_name="Подписчики", on_delete=models.CASCADE,null=True)
-    time_following = models.DateTimeField(auto_now_add=True, verbose_name="Дата подписки",null=True)
+    user = models.ForeignKey(User, related_name="followers", verbose_name="user", on_delete=models.CASCADE, null=True)
+    following_user = models.ForeignKey(User, related_name="following", verbose_name="follower", on_delete=models.CASCADE,null=True)
+    time_following = models.DateTimeField(auto_now_add=True, verbose_name="start follow time",null=True)
 
     class Meta:
         verbose_name = 'Followers'

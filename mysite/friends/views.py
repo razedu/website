@@ -40,6 +40,10 @@ def get_weather(request):
     w_response['city'] = user_city
     return w_response
 
+def get_nasa_data():
+    response = requests.get(f"https://api.nasa.gov/planetary/apod?api_key={os.getenv('NASA_API')}")
+    return response.json()['url']
+
 @login_required(login_url='login/')
 def home(request):
     my_user=request.user
@@ -54,12 +58,13 @@ def home(request):
     users = Follow.objects.filter(following_user=my_user.pk).values('user')
     user_posts = Post.objects.filter(Q(user__in=users)|Q(user_id=my_user.pk)).order_by('-time_create')
     user_likes = [post.pk for post in Post.objects.filter(likes__user=request.user)]
+    nasa = get_nasa_data()
     context = {
         'menu':left_menu,
         'user_posts':user_posts,
         'form':form,
         'user_likes':user_likes,
-        'weather': get_weather(request)
+        'weather': get_weather(request),
     }
     return render(request, 'friends/base.html', context=context)
 
@@ -70,6 +75,7 @@ def all_users(request):
         'menu':left_menu,
         'users':users,
         'user_followed':user_followed,
+        'weather': get_weather(request),
     }
     return render(request,'friends/all_users.html', context=context)
 
@@ -84,29 +90,29 @@ def profile(request, id):
         'posts':posts,
         'followers':followers,
         'is_follow':is_follow,
+        'weather': get_weather(request),
     }
     return render(request, 'friends/user.html', context=context)
 
 def get_news(request):
     api_key = os.getenv("NEWS_API")
-    link = "https://newsapi.org/v2/top-headlines/"
+    link = "https://newsapi.org/v2/everything"
 
     headers={
     "X-Api-Key":api_key,
     }
 
     params = {
-        "country":"ru",
-        "pageSize": 100,
+        "sources":"RT",
     }
 
     response = requests.get(url=link, headers=headers, params=params)
-    print(response)
     news = response.json()['articles']
 
     context = {
         'menu': left_menu,
         'news': news,
+        'weather': get_weather(request),
     }
 
     return render(request, 'friends/news.html', context=context)
@@ -163,6 +169,7 @@ def my_followers(request):
     context = {
         'followers':followers,
         'menu':left_menu,
+        'weather': get_weather(request),
     }
     return render(request, 'friends/followers.html', context=context)
 
@@ -171,6 +178,7 @@ def followed_user(request):
     context = {
         'followed':followed,
         'menu':left_menu,
+        'weather': get_weather(request),
     }
     return render(request, 'friends/followed.html', context=context)
 
