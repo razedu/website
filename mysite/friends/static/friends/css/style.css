@@ -1,15 +1,33 @@
 /*Header*/
 
+.header {
+    background-color: #00AF91;
+}
+
+.nav-btn:hover {
+    background-color: #FFC54D;
+    border-color: #FFC54D;
+}
+
 .site-title {
     font-family: 'Fascinate', cursive;
     color: white;
 }
 
 .site-title:hover {
-    color: #40DFEF;
+    color: #FFC54D;
+}
+
+.weather-info {
+    color: white;
+    font-family:'Gruppo', cursive;
 }
 
 /*Left menu*/
+
+.left-menu {
+    background-color: #007965;
+}
 
 .left-menu-button {
     font-family: 'Fredoka One', cursive;
@@ -17,12 +35,35 @@
 }
 
 .left-menu-button:hover {
-    color: #FAFFAF;
+    color: #FFC54D;
 }
 
+/*User page*/
+
+.user-profile {
+    margin: 8px;
+}
 
 .avatar {
     max-width: 70px;
+    margin-bottom: 10px;
+}
+
+.user-post {
+    margin: 0px 4px 4px 4px;
+}
+
+form .btn-light {
+    border-color: black;
+}
+
+form .btn-yellow:hover {
+    background-color: #FFC54D;
+    border-color: #FFC54D;
+}
+
+form .btn-red:hover {
+    background-color: #f99ab6;
 }
 
 .fa-heart {
@@ -36,14 +77,6 @@
 
 .form-control {
     background-color: white;
-}
-
-.header {
-    background-color: #35858B;
-}
-
-.left-menu {
-    background-color: #4FBDBA;
 }
 
 .main-page {

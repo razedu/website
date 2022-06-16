@@ -4,9 +4,9 @@
     {% for n in news %}
         <div class="news-box border border-3 rounded m-2 p-2">
             <a class="text-decoration-none text-reset" href={{n.url}}>
-                <p>{{ n.title }}</p>
+                <p style="font-weight: bold;">{{ n.title }}</p>
                 {% if n.urlToImage %}
-                <img class="rounded img-fluid" src="{{ n.urlToImage }}" alt="">
+                <img class="rounded img-fluid" style="margin-bottom: 16px;" src="{{ n.urlToImage }}" alt="">
                 <p>{{ n.description }}</p>
                 <p style="margin:0px;">{{ n.publishedAt }}</p>
             </a>

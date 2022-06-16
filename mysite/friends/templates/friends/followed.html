@@ -9,7 +9,7 @@
                 <p class="text-center lh-1">{{user.username}}</p>
                 <form action="{% url 'unfollow' user_id=user.id%}" method="post">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-primary btn-sm">Unfollow</button>
+                    <button type="submit" class="btn btn-light btn-sm btn-red">Unfollow</button>
                 </form>
             </a>
         </div>

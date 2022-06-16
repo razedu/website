@@ -18,7 +18,6 @@ from . import forms
 left_menu = [{'title':'News', 'url_name':'get_news'},
 {'title':'Followers', 'url_name':'followers'},
 {'title':'Followed', 'url_name':'followed'},
-{'title':'Posts', 'url_name':'messages'},
 {'title':'All users', 'url_name':'all_users'},
 ]
 
@@ -68,6 +67,7 @@ def home(request):
     }
     return render(request, 'friends/base.html', context=context)
 
+@login_required(login_url='login/')
 def all_users(request):
     users = User.objects.all().exclude(pk=request.user.pk)
     user_followed = User.objects.filter(followers__following_user=request.user)
@@ -79,6 +79,7 @@ def all_users(request):
     }
     return render(request,'friends/all_users.html', context=context)
 
+@login_required(login_url='login/')
 def profile(request, id):
     user = User.objects.get(id = id)
     posts = user.posts.all().order_by('-time_create')
@@ -94,6 +95,7 @@ def profile(request, id):
     }
     return render(request, 'friends/user.html', context=context)
 
+@login_required(login_url='login/')
 def get_news(request):
     api_key = os.getenv("NEWS_API")
     link = "https://newsapi.org/v2/everything"
@@ -130,7 +132,7 @@ def user_login(request):
                     username=username,
                     password=password)
                 login(request, user_data)
-                return redirect('profile', id=user.pk)
+                return redirect('home')
     else:
         form = forms.LoginUserForm()
     return render(request, 'friends/login.html', {'form':form})
@@ -147,23 +149,33 @@ def register_user(request):
             user = form.save()
             Profile.objects.create(user=user)
             login(request, user)
-            return redirect('profile',id=user.pk)
+            return redirect('home')
     else:
         form = forms.RegisterUserForm()
     return render(request, 'friends/register.html', {'form':form})
 
+@login_required(login_url='login/')
 def follow_user(request, user_id):
     if request.method == 'POST':
         follow = Follow(user_id=user_id, following_user=request.user)
         follow.save()
         return redirect(request.META['HTTP_REFERER'])
 
+@login_required(login_url='login/')
 def unfollow_user(request, user_id):
     if request.method == 'POST':
         follow = Follow.objects.get(user=user_id, following_user=request.user.pk)
         follow.delete()
         return redirect(request.META['HTTP_REFERER'])
 
+@login_required(login_url='login/')
+def delete_follower(request, user_id):
+    if request.method == 'POST':
+        follow = Follow.objects.get(user=request.user.id, following_user=user_id)
+        follow.delete()
+        return redirect(request.META['HTTP_REFERER'])
+
+@login_required(login_url='login/')
 def my_followers(request):
     followers = User.objects.filter(following__user=request.user.pk)
     context = {
@@ -173,6 +185,7 @@ def my_followers(request):
     }
     return render(request, 'friends/followers.html', context=context)
 
+@login_required(login_url='login/')
 def followed_user(request):
     followed = User.objects.filter(followers__following_user=request.user.pk)
     context = {
@@ -182,17 +195,20 @@ def followed_user(request):
     }
     return render(request, 'friends/followed.html', context=context)
 
+@login_required(login_url='login/')
 def delete_post(request, post_id):
     post = Post.objects.get(id=post_id)
     post.delete()
     return redirect('profile', id=request.user.pk)
 
+@login_required(login_url='login/')
 def like_post(request, post_id):
     if request.method == 'POST':
         like = Like(user=request.user, post_id=post_id)
         like.save()
         return redirect(request.META['HTTP_REFERER'])
 
+@login_required(login_url='login/')
 def like_delete(request, post_id):
     if request.method == 'POST':
         like = Like.objects.get(post=post_id, user=request.user.pk)

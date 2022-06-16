@@ -1,35 +1,40 @@
 {% extends 'friends/base_logout.html' %}
 
 {% block content %}
-<div class="col">
-    <form method="post">
-        {% csrf_token %}
-        <div class="col register-form">
-            {% if form.non_field_errors %}
-                {{ form.non_field_errors.as_ul}}
-            {% endif %}
-            {% for field in form %}
-                <div class="col">
-                    {{ field.errors }}
-                </div>
-                <div class="row">
-                    <div class="col-2 p-1 form-label-tag">
-                        {{ field.label_tag }}
+<div class="d-flex flex-row">
+    <div class="col-4">
+        <form method="post">
+            {% csrf_token %}
+            <div class="col register-form">
+                {% if form.non_field_errors %}
+                    {{ form.non_field_errors.as_ul}}
+                {% endif %}
+                {% for field in form %}
+                    <div class="col">
+                        {{ field.errors }}
                     </div>
-                    <div class="col p-1">
-                        {{ field }}
+                    <div class="row">
+                        <div class="col-2 p-1 form-label-tag">
+                            {{ field.label_tag }}
+                        </div>
+                        <div class="col p-1">
+                            {{ field }}
+                        </div>
                     </div>
-                </div>
-                <div class="p-1">
-                    {% if field.help_text %}
-                    <p class="help">{{ field.help_text|safe }}</p>
-                    {% endif %}
-                </div>
-            {% endfor %}
-        </div>
-        <div class="col">
-            <button type="submit" class="btn btn-primary">Войти</button>
-        </div>
-    </form>
+                    <div class="p-1">
+                        {% if field.help_text %}
+                        <p class="help">{{ field.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="col">
+                <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+        </form>
+    </div>
+    <div>
+        <h4>Don't have an account? you can <a href="{% url 'register' %}">register</a> now</h4>
+    </div>
 </div>
 {% endblock %}
