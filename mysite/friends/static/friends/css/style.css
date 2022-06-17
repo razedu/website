@@ -59,11 +59,12 @@ form .btn-light {
 
 form .btn-yellow:hover {
     background-color: #FFC54D;
-    border-color: #FFC54D;
+    border-color: black;
 }
 
 form .btn-red:hover {
     background-color: #f99ab6;
+    border-color: black;
 }
 
 .fa-heart {

@@ -31,3 +31,6 @@ class LoginUserForm(forms.Form):
 
 class PostForm(forms.Form):
     text = forms.CharField(label='Text', max_length=500, widget=forms.Textarea(attrs={'class':'form-control', 'style':'height:100px'}))
+
+class SearchUserForm(forms.Form):
+    name = forms.CharField(label='Username', max_length=50, widget=forms.TextInput(attrs={'class':'search-user-form form-control'}))

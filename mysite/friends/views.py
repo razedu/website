@@ -17,7 +17,7 @@ from . import forms
 # Create your views here.
 left_menu = [{'title':'News', 'url_name':'get_news'},
 {'title':'Followers', 'url_name':'followers'},
-{'title':'Followed', 'url_name':'followed'},
+{'title':'Following', 'url_name':'following'},
 {'title':'All users', 'url_name':'all_users'},
 ]
 
@@ -69,14 +69,21 @@ def home(request):
 
 @login_required(login_url='login/')
 def all_users(request):
-    users = User.objects.all().exclude(pk=request.user.pk)
+    if request.method == 'POST':
+        form = forms.SearchUserForm(request.POST)
+        if form.is_valid():
+            users = User.objects.filter(username__contains=form.cleaned_data.get('name')).exclude(pk=request.user.pk)
+    else:
+        users = User.objects.all().exclude(pk=request.user.pk)
+        form = forms.SearchUserForm()
     user_followed = User.objects.filter(followers__following_user=request.user)
     context = {
-        'menu':left_menu,
-        'users':users,
-        'user_followed':user_followed,
-        'weather': get_weather(request),
-    }
+            'menu':left_menu,
+            'user_followed':user_followed,
+            'weather': get_weather(request),
+            'users': users,
+            'form':form,
+        }
     return render(request,'friends/all_users.html', context=context)
 
 @login_required(login_url='login/')
@@ -106,6 +113,7 @@ def get_news(request):
 
     params = {
         "sources":"RT",
+        "language":"en",
     }
 
     response = requests.get(url=link, headers=headers, params=params)
