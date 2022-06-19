@@ -4,7 +4,7 @@
 <div class="search form" style="margin-top: 10px;">
     <form action="" method="post">
         {% csrf_token %}
-        <div class="d-flex align-items-center">
+        <div class="d-flex align-items-center" style="width:550px;">
             <div class="col-2 d-flex justify-content-center m-1">
                 <p style="margin:0px; font-weight: bold;">Search user</p>
             </div>
@@ -19,7 +19,11 @@
     </form>
 </div>
 <div>
+    {% if users %}
     <p class="m-2">Users found: {{users.count}}</p>
+    {% else %}
+    <h6 class="m-2">User not found</h6>
+    {% endif %}
 </div>
 <div class="d-flex flex-wrap">
     {% for user in users %}

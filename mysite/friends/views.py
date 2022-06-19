@@ -217,7 +217,7 @@ def like_post(request, post_id):
         return redirect(request.META['HTTP_REFERER'])
 
 @login_required(login_url='login/')
-def like_delete(request, post_id):
+def delete_like(request, post_id):
     if request.method == 'POST':
         like = Like.objects.get(post=post_id, user=request.user.pk)
         like.delete()

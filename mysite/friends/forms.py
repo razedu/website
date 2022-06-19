@@ -34,3 +34,6 @@ class PostForm(forms.Form):
 
 class SearchUserForm(forms.Form):
     name = forms.CharField(label='Username', max_length=50, widget=forms.TextInput(attrs={'class':'search-user-form form-control'}))
+
+class ProfileEditForm(forms.Form):
+    email = forms.EmailField(label='Email')

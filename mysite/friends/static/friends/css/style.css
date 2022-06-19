@@ -42,15 +42,43 @@
 
 .user-profile {
     margin: 8px;
+    max-height: 210px;
 }
 
 .avatar {
-    max-width: 70px;
+    max-width: 100px;
     margin-bottom: 10px;
 }
 
 .user-post {
     margin: 0px 4px 4px 4px;
+}
+
+/*User post*/
+
+.post-date {
+    margin: 0px;
+    display:inline; 
+    display:inline-block;
+}
+
+.username-link {
+    margin: 0px;
+    display:inline; 
+    display:inline-block;
+    color: black;
+}
+
+.username-link:hover {
+    color:#007965;
+}
+
+.delete-post-icon {
+    color:black;
+}
+
+.delete-post-icon:hover {
+    color:#f99ab6;
 }
 
 form .btn-light {
