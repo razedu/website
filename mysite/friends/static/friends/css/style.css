@@ -4,6 +4,11 @@
     background-color: #00AF91;
 }
 
+.nav-btn {
+    background-color: white;
+    border-color: white;
+}
+
 .nav-btn:hover {
     background-color: #FFC54D;
     border-color: #FFC54D;
@@ -42,7 +47,7 @@
 
 .user-profile {
     margin: 8px;
-    max-height: 210px;
+    max-height: 270px;
 }
 
 .avatar {
@@ -81,11 +86,17 @@
     color:#f99ab6;
 }
 
-form .btn-light {
+.btn-white {
+    background-color: white;
     border-color: black;
 }
 
-form .btn-yellow:hover {
+form .btn-light {
+    background-color: #fcdfa6;
+    border-color: black;
+}
+
+.btn-yellow:hover {
     background-color: #FFC54D;
     border-color: black;
 }

@@ -103,6 +103,36 @@ def profile(request, id):
     return render(request, 'friends/user.html', context=context)
 
 @login_required(login_url='login/')
+def edit_profile(request, id):
+    if request.method == "POST":
+        if "change_password" in request.POST:
+            password_form = forms.PasswordEditForm(id, request.POST)
+            email_form = forms.EmailEditForm()
+            if password_form.is_valid():
+                user = User.objects.get(pk=id)
+                user.password = password_form.cleaned_data.get('password2')
+                user.save()
+                return redirect('login')
+        elif "change_email" in request.POST:
+            email_form = forms.EmailEditForm(request.POST)
+            password_form = forms.PasswordEditForm(id)
+            if email_form.is_valid():
+                user = User.objects.get(pk=id)
+                user.email = email_form.cleaned_data.get('email')
+                user.save()
+                return redirect('edit_profile', id=request.user.pk)
+    else:
+        email_form = forms.EmailEditForm()
+        password_form = forms.PasswordEditForm(id)
+    context = {
+        'menu':left_menu,
+        'email_form':email_form,
+        'password_form':password_form,
+    }
+    return render(request, 'friends/edit_profile.html', context=context)
+
+
+@login_required(login_url='login/')
 def get_news(request):
     api_key = os.getenv("NEWS_API")
     link = "https://newsapi.org/v2/everything"

@@ -1,0 +1,47 @@
+{% extends 'friends/base.html' %}
+
+{% block content %}
+    <div class="col">
+        <div class="email-form col" style="margin-top: 10px;">
+            <div class="row">
+                <h4>Change Email</h4>
+            </div>
+            <form action="" method="post">
+                {% csrf_token %}
+                {{email_form.non_field_errors}}
+                <div class="row">
+                    <div class="col">
+                        {{email_form.email}}
+                    </div>
+                    <div class="col">
+                        <button type="submit" name="change_email" class="btn btn-light btn-yellow">Change email</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="password-form col" style="margin-top: 10px;">
+            <div class="row">
+                <h4>Change Password</h4>
+            </div>
+            <form action="" method="post">
+                {% csrf_token %}
+                {{password_form.non_field_errors}}
+                <div class="row">
+                    <div class="col">
+                        {{password_form.password1}}
+                    </div>
+                    <div class="col">
+                        {{password_form.password2}}
+                    </div>
+                    <div class="col">
+                        {{password_form.password3}}
+                    </div>
+                    <div class="col">
+                        <button type="submit" name="change_password" class="btn btn-light btn-yellow">Change password</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
